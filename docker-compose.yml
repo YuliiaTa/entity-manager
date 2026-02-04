@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  # 1. База данных PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: entity-manager-db
+    environment:
+      POSTGRES_DB: entitydb
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: pass1
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d entitydb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - entity-network
+
+  # 2. Веб-интерфейс для БД
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: entity-manager-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - entity-network
+
+  # 3. Приложение
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: entity-manager-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/entitydb
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: pass1
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - entity-network
+    restart: unless-stopped
+
+networks:
+  entity-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
