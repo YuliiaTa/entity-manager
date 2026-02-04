@@ -36,4 +36,16 @@ public class EntityResponse {
                 .deadline(entity.getDeadline())
                 .build();
     }
+    public static EntityResponse fromEntity(Entity entity) {
+        return EntityResponse.builder()
+                .id(entity.getId())
+                .title(entity.getTitle())
+                .description(entity.getDescription())
+                .status(entity.getStatus())
+                .priority(entity.getPriority())
+                .createdAt(entity.getCreatedAt())
+                .updatedAt(entity.getUpdatedAt())
+                .deadline(entity.getDeadline())
+                .build();
+    }
 }

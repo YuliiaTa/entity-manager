@@ -1,0 +1,62 @@
+package com.iuliieta.entitymanager.service;
+
+import com.iuliieta.entitymanager.dto.EntityRequest;
+import com.iuliieta.entitymanager.dto.EntityResponse;
+import com.iuliieta.entitymanager.model.Entity;
+import com.iuliieta.entitymanager.repository.EntityRepository;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+@Transactional
+public class EntityService {
+    private final EntityRepository entityRepository;
+
+    public EntityResponse createEntity(EntityRequest request) {
+        Entity entity = request.toEntity(request);
+        Entity saved = entityRepository.save(entity);
+        EntityResponse response = new EntityResponse();
+        return response.toResponse(saved);
+    }
+
+    public EntityResponse updateEntity(Long id, EntityRequest request) {
+        Entity entity = entityRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Entity not found with id: " + id));
+        entity.setTitle(request.getTitle());
+        entity.setDescription(request.getDescription());
+        entity.setPriority(request.getPriority());
+        entity.setDeadline(request.getDeadline());
+        Entity updated = entityRepository.save(entity);
+        EntityResponse response = new EntityResponse();
+        return response.toResponse(updated);
+    }
+
+    public void deleteEntity(Long id) {
+        if (!entityRepository.existsById(id)) {
+            throw new EntityNotFoundException("Entity not found with id: " + id);
+        }
+        entityRepository.deleteById(id);
+    }
+
+    public EntityResponse findById(Long id) {
+        Entity entity = entityRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Entity not found with id: " + id));
+        EntityResponse response = new EntityResponse();
+        return response.toResponse(entity);
+    }
+
+    public List<EntityResponse> getAllEntities() {
+        return entityRepository.findAll()
+                .stream()
+                .map(EntityResponse::fromEntity)
+                .collect(Collectors.toList());
+    }
+}
