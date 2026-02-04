@@ -3,6 +3,7 @@ package com.iuliieta.entitymanager.controller;
 import com.iuliieta.entitymanager.dto.EntityRequest;
 import com.iuliieta.entitymanager.dto.EntityResponse;
 import com.iuliieta.entitymanager.service.EntityService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import java.util.List;
 @RequestMapping("/entity")
 @RequiredArgsConstructor
 @Validated
+@Tag(name = "Entity API")
 public class EntityController {
     private final EntityService entityService;
 

@@ -19,10 +19,9 @@ public class EntityService {
     private final EntityRepository entityRepository;
 
     public EntityResponse createEntity(EntityRequest request) {
-        Entity entity = request.toEntity(request);
+        Entity entity = request.toEntity();
         Entity saved = entityRepository.save(entity);
-        EntityResponse response = new EntityResponse();
-        return response.toResponse(saved);
+        return EntityResponse.fromEntity(saved);
     }
 
     public EntityResponse updateEntity(Long id, EntityRequest request) {

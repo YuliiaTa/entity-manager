@@ -2,6 +2,7 @@ package com.iuliieta.entitymanager.dto;
 
 import com.iuliieta.entitymanager.model.Entity;
 import com.iuliieta.entitymanager.model.EntityPriority;
+import com.iuliieta.entitymanager.model.EntityStatus;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -28,12 +29,16 @@ public class EntityRequest {
     @Future
     private LocalDateTime deadline;
 
-    public Entity toEntity(EntityRequest request) {
+    public Entity toEntity() {
+        LocalDateTime now = LocalDateTime.now();
         return Entity.builder()
-                .title(request.getTitle())
-                .description(request.getDescription())
-                .priority(request.getPriority())
-                .deadline(request.getDeadline())
+                .title(this.getTitle())
+                .description(this.getDescription())
+                .priority(this.getPriority())
+                .deadline(this.getDeadline())
+                .status(EntityStatus.PENDING)
+                .createdAt(now)
+                .updatedAt(now)
                 .build();
     }
 }
