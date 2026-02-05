@@ -52,5 +52,36 @@ public class Entity {
     @Future(message = "Deadline must be in the future")
     private LocalDateTime deadline;
 
+    protected boolean canChangeStatusTo(EntityStatus newStatus) {
+        if (this.status == EntityStatus.COMPLETED || this.status == EntityStatus.FAILED) {
+            return false;
+        }
+        if (newStatus == EntityStatus.PENDING &&
+                this.status != EntityStatus.PENDING) {
+            return false;
+        }
+        if (newStatus == EntityStatus.COMPLETED &&
+                this.status == EntityStatus.PENDING) {
+            return false;
+        }
+        return true;
+    }
 
+    public void changeStatus(EntityStatus newStatus) {
+        if (!canChangeStatusTo(newStatus)) {
+            throw new IllegalStateException(
+                    String.format("Cannot change status from %s to %s",
+                            this.status, newStatus)
+            );
+        }
+        this.status = newStatus;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void makeFailedAfterDeadline() {
+        if (this.deadline != null && LocalDateTime.now().isAfter(this.deadline) &&
+                this.status != EntityStatus.COMPLETED) {
+            this.status = EntityStatus.FAILED;
+        }
+    }
 }
