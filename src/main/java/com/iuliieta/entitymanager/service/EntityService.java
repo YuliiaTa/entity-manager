@@ -14,8 +14,9 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class EntityService {
+
     private final EntityRepository entityRepository;
 
     public EntityResponse createEntity(EntityRequest request) {

@@ -4,5 +4,5 @@ public enum EntityStatus {
     PENDING,
     IN_PROGRESS,
     COMPLETED,
-    CANCELLED
+    FAILED
 }

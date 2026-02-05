@@ -51,4 +51,6 @@ public class Entity {
 
     @Future(message = "Deadline must be in the future")
     private LocalDateTime deadline;
+
+
 }
