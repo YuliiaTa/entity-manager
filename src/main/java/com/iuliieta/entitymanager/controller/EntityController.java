@@ -27,13 +27,12 @@ public class EntityController {
     }
 
     @PutMapping("/{id}")
-    public EntityResponse updateEntity(
-            @PathVariable Long id,
-            @Valid @RequestBody EntityRequest request) {
+    public EntityResponse updateEntity(@PathVariable Long id, @Valid @RequestBody EntityRequest request) {
         return entityService.updateEntity(id, request);
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteEntity(@PathVariable Long id) {
         entityService.deleteEntity(id);
     }

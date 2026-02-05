@@ -23,6 +23,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -159,11 +160,12 @@ class EntityControllerTest {
     }
 
     @Test
-    @DisplayName("DELETE /entity/{id} - должен вернуть 200 при успешном удалении")
-    void deleteEntity_ShouldReturn200() throws Exception {
+    @DisplayName("DELETE /entity/{id} - должен вернуть 204 No Content при успешном удалении")
+    void deleteEntity_ShouldReturn204NoContent() throws Exception {
         Long entityId = 1L;
+        doNothing().when(entityService).deleteEntity(entityId);
         mockMvc.perform(delete("/entity/{id}", entityId))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
     @Test

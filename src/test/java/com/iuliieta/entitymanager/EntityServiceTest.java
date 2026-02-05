@@ -2,12 +2,12 @@ package com.iuliieta.entitymanager;
 
 import com.iuliieta.entitymanager.dto.EntityRequest;
 import com.iuliieta.entitymanager.dto.EntityResponse;
+import com.iuliieta.entitymanager.exception.EntityNotFoundException;
 import com.iuliieta.entitymanager.model.Entity;
 import com.iuliieta.entitymanager.model.EntityPriority;
 import com.iuliieta.entitymanager.model.EntityStatus;
 import com.iuliieta.entitymanager.repository.EntityRepository;
 import com.iuliieta.entitymanager.service.EntityService;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
