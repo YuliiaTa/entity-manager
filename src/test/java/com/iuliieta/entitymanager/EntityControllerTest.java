@@ -52,16 +52,16 @@ class EntityControllerTest {
         LocalDateTime now = LocalDateTime.now();
 
         entityRequest = EntityRequest.builder()
-                .title("Test Entity")
-                .description("Test Description")
+                .title("my entity")
+                .description("my entity description")
                 .priority(EntityPriority.MEDIUM)
                 .deadline(deadline)
                 .build();
 
         entityResponse = EntityResponse.builder()
                 .id(1L)
-                .title("Test Entity")
-                .description("Test Description")
+                .title("my entity")
+                .description("my entity description")
                 .status(EntityStatus.PENDING)
                 .priority(EntityPriority.MEDIUM)
                 .createdAt(now)
@@ -80,8 +80,8 @@ class EntityControllerTest {
                         .content(objectMapper.writeValueAsString(entityRequest)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.title").value("Test Entity"))
-                .andExpect(jsonPath("$.description").value("Test Description"))
+                .andExpect(jsonPath("$.title").value("my entity"))
+                .andExpect(jsonPath("$.description").value("my entity description"))
                 .andExpect(jsonPath("$.status").value("PENDING"))
                 .andExpect(jsonPath("$.priority").value("MEDIUM"));
     }
@@ -91,7 +91,7 @@ class EntityControllerTest {
     void createEntity_WithInvalidData_ShouldReturn400() throws Exception {
         EntityRequest invalidRequest = EntityRequest.builder()
                 .title("")
-                .description("Test")
+                .description("test")
                 .priority(EntityPriority.MEDIUM)
                 .deadline(LocalDateTime.now().plusDays(1))
                 .build();
@@ -106,8 +106,8 @@ class EntityControllerTest {
     @DisplayName("POST /entity - должен вернуть 400 при прошедшей дате deadline")
     void createEntity_WithPastDeadline_ShouldReturn400() throws Exception {
         EntityRequest invalidRequest = EntityRequest.builder()
-                .title("Valid Title")
-                .description("Description")
+                .title("valid title")
+                .description("description")
                 .priority(EntityPriority.MEDIUM)
                 .deadline(LocalDateTime.now().minusDays(1))
                 .build();
@@ -127,8 +127,8 @@ class EntityControllerTest {
         mockMvc.perform(get("/entity/{id}", entityId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.title").value("Test Entity"))
-                .andExpect(jsonPath("$.description").value("Test Description"));
+                .andExpect(jsonPath("$.title").value("my entity"))
+                .andExpect(jsonPath("$.description").value("my entity description"));
     }
 
     @Test
@@ -137,8 +137,8 @@ class EntityControllerTest {
         Long entityId = 1L;
         EntityResponse updatedResponse = EntityResponse.builder()
                 .id(entityId)
-                .title("Updated Title")
-                .description("Updated Description")
+                .title("updated title")
+                .description("updated description")
                 .status(EntityStatus.IN_PROGRESS)
                 .priority(EntityPriority.HIGH)
                 .createdAt(LocalDateTime.now().minusDays(1))
@@ -154,7 +154,7 @@ class EntityControllerTest {
                         .content(objectMapper.writeValueAsString(entityRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.title").value("Updated Title"))
+                .andExpect(jsonPath("$.title").value("updated title"))
                 .andExpect(jsonPath("$.priority").value("HIGH"));
     }
 
@@ -171,8 +171,8 @@ class EntityControllerTest {
     void getAllEntities_ShouldReturn200AndList() throws Exception {
         EntityResponse secondResponse = EntityResponse.builder()
                 .id(2L)
-                .title("Second Entity")
-                .description("Second Description")
+                .title("my second entity")
+                .description("second entity description")
                 .status(EntityStatus.IN_PROGRESS)
                 .priority(EntityPriority.HIGH)
                 .createdAt(LocalDateTime.now())
@@ -187,7 +187,7 @@ class EntityControllerTest {
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[1].id").value(2))
-                .andExpect(jsonPath("$[0].title").value("Test Entity"))
-                .andExpect(jsonPath("$[1].title").value("Second Entity"));
+                .andExpect(jsonPath("$[0].title").value("my entity"))
+                .andExpect(jsonPath("$[1].title").value("my second entity"));
     }
 }

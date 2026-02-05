@@ -34,39 +34,35 @@ class EntityServiceTest {
     private EntityService entityService;
 
     private Entity testEntity;
-    private EntityRequest validRequest;
+    private EntityRequest validEntityRequest;
     private LocalDateTime futureDate;
 
     @BeforeEach
     void setUp() {
-        futureDate = LocalDateTime.now().plusDays(7);
-
         testEntity = Entity.builder()
                 .id(1L)
-                .title("Test Entity")
-                .description("Test Description")
+                .title("my entity")
+                .description("my entity description")
                 .status(EntityStatus.PENDING)
                 .priority(EntityPriority.MEDIUM)
                 .createdAt(LocalDateTime.now().minusDays(1))
                 .updatedAt(LocalDateTime.now().minusHours(1))
-                .deadline(futureDate)
+                .deadline(LocalDateTime.now().plusDays(7))
                 .build();
-
-        validRequest = EntityRequest.builder()
-                .title("Test Entity")
-                .description("Test Description")
+        validEntityRequest = EntityRequest.builder()
+                .title("my entity")
+                .description("my entity description")
                 .priority(EntityPriority.MEDIUM)
-                .deadline(futureDate)
+                .deadline(LocalDateTime.now().plusDays(7))
                 .build();
     }
 
     @Test
-    @DisplayName("Создание сущности - должен сохранить и вернуть сущность с ID")
+    @DisplayName("Создание сущности - должен сохранить и вернуть сущность с id")
     void createEntity_ShouldSaveAndReturnEntityWithId() {
         when(entityRepository.save(any(Entity.class))).thenReturn(testEntity);
 
-        EntityResponse response = entityService.createEntity(validRequest);
-
+        EntityResponse response = entityService.createEntity(validEntityRequest);
         assertNotNull(response);
         assertEquals(testEntity.getId(), response.getId());
         assertEquals(testEntity.getTitle(), response.getTitle());
@@ -81,7 +77,7 @@ class EntityServiceTest {
     @DisplayName("Создание сущности - должен установить дефолтные значения и временные метки")
     void createEntity_ShouldSetDefaultValuesAndTimestamps() {
         EntityRequest requestWithoutDescription = EntityRequest.builder()
-                .title("Test")
+                .title("test")
                 .priority(EntityPriority.HIGH)
                 .deadline(futureDate)
                 .build();
@@ -95,9 +91,9 @@ class EntityServiceTest {
         EntityResponse response = entityService.createEntity(requestWithoutDescription);
 
         assertNotNull(response.getId());
-        assertEquals("Test", response.getTitle());
-        assertNull(response.getDescription()); // Описание может быть null
-        assertEquals(EntityStatus.PENDING, response.getStatus()); // Дефолтный статус
+        assertEquals("test", response.getTitle());
+        assertNull(response.getDescription());
+        assertEquals(EntityStatus.PENDING, response.getStatus());
         assertEquals(EntityPriority.HIGH, response.getPriority());
         assertNotNull(response.getCreatedAt());
         assertNotNull(response.getUpdatedAt());
@@ -137,8 +133,8 @@ class EntityServiceTest {
     void updateEntity_ShouldUpdateFieldsAndReturnUpdatedEntity() {
         Long entityId = 1L;
         EntityRequest updateRequest = EntityRequest.builder()
-                .title("Updated Title")
-                .description("Updated Description")
+                .title("updated title")
+                .description("updated description")
                 .priority(EntityPriority.HIGH)
                 .deadline(futureDate.plusDays(1))
                 .build();
@@ -150,8 +146,8 @@ class EntityServiceTest {
 
         EntityResponse response = entityService.updateEntity(entityId, updateRequest);
 
-        assertEquals("Updated Title", response.getTitle());
-        assertEquals("Updated Description", response.getDescription());
+        assertEquals("updated title", response.getTitle());
+        assertEquals("updated description", response.getDescription());
         assertEquals(EntityPriority.HIGH, response.getPriority());
         assertEquals(futureDate.plusDays(1), response.getDeadline());
 
@@ -170,7 +166,7 @@ class EntityServiceTest {
                 invocation.getArgument(0)
         );
 
-        EntityResponse response = entityService.updateEntity(entityId, validRequest);
+        EntityResponse response = entityService.updateEntity(entityId, validEntityRequest);
 
         assertEquals(originalCreatedAt, response.getCreatedAt());
         assertNotNull(response.getUpdatedAt());
@@ -211,7 +207,7 @@ class EntityServiceTest {
     void getAllEntities_ShouldReturnAllEntities() {
         Entity secondEntity = Entity.builder()
                 .id(2L)
-                .title("Second Entity")
+                .title("my second entity")
                 .status(EntityStatus.IN_PROGRESS)
                 .priority(EntityPriority.LOW)
                 .createdAt(LocalDateTime.now())
@@ -223,8 +219,8 @@ class EntityServiceTest {
         List<EntityResponse> responses = entityService.getAllEntities();
 
         assertEquals(2, responses.size());
-        assertEquals("Test Entity", responses.get(0).getTitle());
-        assertEquals("Second Entity", responses.get(1).getTitle());
+        assertEquals("my entity", responses.get(0).getTitle());
+        assertEquals("my second entity", responses.get(1).getTitle());
         verify(entityRepository, times(1)).findAll();
     }
 

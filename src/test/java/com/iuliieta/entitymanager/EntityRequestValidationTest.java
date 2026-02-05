@@ -31,8 +31,8 @@ class EntityRequestValidationTest {
     @DisplayName("Валидация - должен пройти при корректных данных")
     void shouldPassValidationWithValidData() {
         EntityRequest request = EntityRequest.builder()
-                .title("Valid Title")
-                .description("Valid Description")
+                .title("valid title")
+                .description("valid description")
                 .priority(EntityPriority.MEDIUM)
                 .deadline(LocalDateTime.now().plusDays(1))
                 .build();
@@ -44,8 +44,8 @@ class EntityRequestValidationTest {
     @DisplayName("Валидация - должен не пройти при пустом title")
     void shouldFailValidationWithEmptyTitle() {
         EntityRequest request = EntityRequest.builder()
-                .title("") // Пустой
-                .description("Description")
+                .title("")
+                .description("description")
                 .priority(EntityPriority.MEDIUM)
                 .deadline(LocalDateTime.now().plusDays(1))
                 .build();
@@ -59,9 +59,9 @@ class EntityRequestValidationTest {
     @DisplayName("Валидация - должен не пройти при null priority")
     void shouldFailValidationWithNullPriority() {
         EntityRequest request = EntityRequest.builder()
-                .title("Valid Title")
-                .description("Description")
-                .priority(null) // null
+                .title("valid title")
+                .description("description")
+                .priority(null)
                 .deadline(LocalDateTime.now().plusDays(1))
                 .build();
         Set<ConstraintViolation<EntityRequest>> violations = validator.validate(request);
@@ -74,8 +74,8 @@ class EntityRequestValidationTest {
     @DisplayName("Валидация - должен не пройти при прошедшей дате deadline")
     void shouldFailValidationWithPastDeadline() {
         EntityRequest request = EntityRequest.builder()
-                .title("Valid Title")
-                .description("Description")
+                .title("valid Title")
+                .description("description")
                 .priority(EntityPriority.MEDIUM)
                 .deadline(LocalDateTime.now().minusDays(1))
                 .build();
@@ -91,7 +91,7 @@ class EntityRequestValidationTest {
     void shouldFailValidationWithShortTitle(String shortTitle) {
         EntityRequest request = EntityRequest.builder()
                 .title(shortTitle)
-                .description("Description")
+                .description("description")
                 .priority(EntityPriority.MEDIUM)
                 .deadline(LocalDateTime.now().plusDays(1))
                 .build();
@@ -103,7 +103,7 @@ class EntityRequestValidationTest {
     @DisplayName("Валидация - должен пройти при null description (опциональное поле)")
     void shouldPassValidationWithNullDescription() {
         EntityRequest request = EntityRequest.builder()
-                .title("Valid Title")
+                .title("valid title")
                 .description(null)
                 .priority(EntityPriority.MEDIUM)
                 .deadline(LocalDateTime.now().plusDays(1))
