@@ -35,7 +35,6 @@ class EntityServiceTest {
 
     private Entity testEntity;
     private EntityRequest validEntityRequest;
-    private LocalDateTime futureDate;
 
     @BeforeEach
     void setUp() {
@@ -79,7 +78,7 @@ class EntityServiceTest {
         EntityRequest requestWithoutDescription = EntityRequest.builder()
                 .title("test")
                 .priority(EntityPriority.HIGH)
-                .deadline(futureDate)
+                .deadline(LocalDateTime.now().plusDays(7))
                 .build();
 
         when(entityRepository.save(any(Entity.class))).thenAnswer(invocation -> {
@@ -132,25 +131,25 @@ class EntityServiceTest {
     @DisplayName("Обновление сущности - должен обновить поля и вернуть обновленную сущность")
     void updateEntity_ShouldUpdateFieldsAndReturnUpdatedEntity() {
         Long entityId = 1L;
+        LocalDateTime expectedDeadline = LocalDateTime.now().plusDays(8);
+
         EntityRequest updateRequest = EntityRequest.builder()
                 .title("updated title")
                 .description("updated description")
                 .priority(EntityPriority.HIGH)
-                .deadline(futureDate.plusDays(1))
+                .deadline(expectedDeadline)
                 .build();
 
         when(entityRepository.findById(entityId)).thenReturn(Optional.of(testEntity));
         when(entityRepository.save(any(Entity.class))).thenAnswer(invocation ->
                 invocation.getArgument(0)
         );
-
         EntityResponse response = entityService.updateEntity(entityId, updateRequest);
 
         assertEquals("updated title", response.getTitle());
         assertEquals("updated description", response.getDescription());
         assertEquals(EntityPriority.HIGH, response.getPriority());
-        assertEquals(futureDate.plusDays(1), response.getDeadline());
-
+        assertEquals(expectedDeadline, response.getDeadline());
         verify(entityRepository, times(1)).findById(entityId);
         verify(entityRepository, times(1)).save(any(Entity.class));
     }
