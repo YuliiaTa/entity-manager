@@ -57,5 +57,6 @@ public class ChangeEntityStatusService {
         for (Entity entity : overdueEntities) {
             entity.makeFailedAfterDeadline();
         }
+        entityRepository.saveAll(overdueEntities);
     }
 }

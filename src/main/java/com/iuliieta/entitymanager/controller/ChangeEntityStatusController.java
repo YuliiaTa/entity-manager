@@ -3,6 +3,7 @@ package com.iuliieta.entitymanager.controller;
 import com.iuliieta.entitymanager.dto.EntityResponse;
 import com.iuliieta.entitymanager.dto.EntityStatusChangeRequest;
 import com.iuliieta.entitymanager.service.ChangeEntityStatusService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,10 +15,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/entity")
 @RequiredArgsConstructor
 @Validated
-@Tag(name = "Entity API")
+@Tag(name = "Changing entity status")
 public class ChangeEntityStatusController {
     private final ChangeEntityStatusService changeEntityStatusService;
 
+    @Operation(summary = "задание нового статуса у сущности")
     @PatchMapping("/{id}/status")
     public ResponseEntity<EntityResponse> changeEntityStatus(
             @PathVariable Long id,
@@ -26,12 +28,14 @@ public class ChangeEntityStatusController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "перевести сущность в статус исполнения (IN_PROGRESS)")
     @PostMapping("/{id}/start")
     public ResponseEntity<EntityResponse> startEntity(@PathVariable Long id) {
         EntityResponse response = changeEntityStatusService.startEntity(id);
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "перевести сущность в статус завершенной (COMPLETED)")
     @PostMapping("/{id}/complete")
     public ResponseEntity<EntityResponse> completeEntity(@PathVariable Long id) {
         EntityResponse response = changeEntityStatusService.completeEntity(id);

@@ -51,7 +51,7 @@ public class FilterEntityService {
         return filterEntities(null, priority, null, null);
     }
 
-    public List<EntityResponse> getOverdueEntities() {
+    public List<EntityResponse> getOverDeadlineEntities() {
         return filterEntities(null, null, null, true);
     }
 

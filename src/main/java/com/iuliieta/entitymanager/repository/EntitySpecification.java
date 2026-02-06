@@ -32,7 +32,7 @@ public class EntitySpecification {
         };
     }
 
-    // Фильтр по просроченности
+    // Фильтр по дедлайну
     public static Specification<Entity> isOverdue() {
         return (root, query, criteriaBuilder) -> {
             LocalDateTime now = LocalDateTime.now();

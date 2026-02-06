@@ -4,6 +4,7 @@ import com.iuliieta.entitymanager.dto.EntityResponse;
 import com.iuliieta.entitymanager.model.EntityPriority;
 import com.iuliieta.entitymanager.model.EntityStatus;
 import com.iuliieta.entitymanager.service.FilterEntityService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,21 +15,23 @@ import java.util.List;
 @RestController
 @RequestMapping("/entity")
 @RequiredArgsConstructor
-@Tag(name = "Entity API")
+@Tag(name = "Entity Filters")
 public class FilterEntityController {
     private final FilterEntityService entityService;
 
+    @Operation(summary = "фильтрация сущностей по нескольким параметрам")
     @GetMapping("/filter")
     public ResponseEntity<List<EntityResponse>> filterEntities(
             @RequestParam(required = false) EntityStatus status,
             @RequestParam(required = false) EntityPriority priority,
             @RequestParam(required = false) String search,
-            @RequestParam(required = false) Boolean overdue) {
+            @RequestParam(required = false) Boolean deadline) {
         List<EntityResponse> result = entityService.filterEntities(
-                status, priority, search, overdue);
+                status, priority, search, deadline);
         return ResponseEntity.ok(result);
     }
 
+    @Operation(summary = "фильтар по статусу")
     @GetMapping("/status/{status}")
     public ResponseEntity<List<EntityResponse>> getByStatus(
             @PathVariable EntityStatus status) {
@@ -36,6 +39,7 @@ public class FilterEntityController {
         return ResponseEntity.ok(result);
     }
 
+    @Operation(summary = "фильтр по приоритету")
     @GetMapping("/priority/{priority}")
     public ResponseEntity<List<EntityResponse>> getByPriority(
             @PathVariable EntityPriority priority) {
@@ -43,25 +47,19 @@ public class FilterEntityController {
         return ResponseEntity.ok(result);
     }
 
+
+    @Operation(summary = "фильтр по дедлайну")
     @GetMapping("/overdue")
-    public ResponseEntity<List<EntityResponse>> getOverdue() {
-        List<EntityResponse> result = entityService.getOverdueEntities();
+    public ResponseEntity<List<EntityResponse>> getOverDeadline() {
+        List<EntityResponse> result = entityService.getOverDeadlineEntities();
         return ResponseEntity.ok(result);
     }
 
+    @Operation(summary = "фильтр по имени сущности")
     @GetMapping("/search")
     public ResponseEntity<List<EntityResponse>> search(
             @RequestParam String title) {
         List<EntityResponse> result = entityService.searchByTitle(title);
-        return ResponseEntity.ok(result);
-    }
-
-    @GetMapping("/find")
-    public ResponseEntity<List<EntityResponse>> findEntities(
-            @RequestParam(required = false) EntityStatus status,
-            @RequestParam(required = false) EntityPriority priority) {
-        List<EntityResponse> result = entityService.filterEntities(
-                status, priority, null, null);
         return ResponseEntity.ok(result);
     }
 }
